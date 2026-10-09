@@ -1,0 +1,2 @@
+Vector Database Path: F:\Localized-LLM-Minor-Project\data\vectors
+Approximate Vector DB Size (MB): 49.27

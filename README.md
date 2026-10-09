@@ -1,225 +1,228 @@
-# 🤖 Chat with PDF locally using Ollama + LangChain
+# Localized LLM Power Search Engine
 
-A powerful local RAG (Retrieval Augmented Generation) application that lets you chat with your PDF documents using Ollama and LangChain. This project includes multiple interfaces: a modern Next.js web app, a Streamlit interface, and Jupyter notebooks for experimentation.
+> A Privacy Focused, Offline Capable **Multi-PDF Question Answering system** powered by **Retrieval-Augmented Generation (RAG)**, Semantic Search, Embeddings, Vector Databases and Local Large Language Models.
 
-[![Python Tests](https://github.com/tonykipkemboi/ollama_pdf_rag/actions/workflows/tests.yml/badge.svg)](https://github.com/tonykipkemboi/ollama_pdf_rag/actions/workflows/tests.yml)
+## Overview
 
-## ✨ Features
+**Localized LLM Power Search Engine** is an AI Powered document search and question-answering system designed to allow users to interact with multiple PDF documents using natural language.
 
-- 🔒 **100% Local** - All processing happens on your machine, no data leaves
-- 📄 **Multi-PDF Support** - Upload and query across multiple documents
-- 🧠 **Multi-Query RAG** - Intelligent retrieval with source citations
-- 🎯 **Advanced RAG** - LangChain-powered pipeline with ChromaDB
-- 🖥️ **Two Modern UIs** - Next.js (primary) and Streamlit interfaces
-- 🔌 **REST API** - FastAPI backend for programmatic access
-- 📓 **Jupyter Notebooks** - For experimentation and learning
+Instead of manually searching through large documents, users can upload multiple PDFs and ask questions across them simultaneously. The system retrieves the most relevant document chunks using semantic similarity and provides context-grounded answers using a **locally hosted LLM**.
 
-## 🖼️ Screenshots
+The project focuses on improving information retrieval while keeping the data and LLM inference **local**, making it suitable for privacy-sensitive use cases.
 
-### Next.js Interface (Recommended)
-![Next.js UI](nextjs_ui.png)
-*Modern chat interface with PDF management, source citations, and reasoning steps*
+## Key Features
 
-### Streamlit Interface
-![Streamlit UI](st_app_ui.png)
-*Classic Streamlit interface with PDF viewer and chat functionality*
+* **Multi-PDF Question Answering** - Query multiple documents simultaneously.
+* **Semantic Search** - Retrieves relevant information based on meaning rather than exact keyword matches.
+* **Retrieval-Augmented Generation (RAG)** - Grounds LLM responses using retrieved document context.
+* **Embedding-Based Retrieval** - Converts document chunks and queries into vector representations.
+* **Multi-Query Retrieval** - Generates multiple search perspectives for a single user query to improve retrieval.
+* **Local LLM Support** - Uses locally hosted models through Ollama for privacy and offline inference.
+* **Retrieval Evaluation** - Measures context precision and context utilization across benchmark questions.
+* **Streamlit Interface** - Provides an interactive interface for document upload and question answering.
 
-## 📺 Video Tutorial
-<a href="https://youtu.be/ztBJqzBU5kc">
-  <img src="https://img.youtube.com/vi/ztBJqzBU5kc/hqdefault.jpg" alt="Watch the video" width="100%">
-</a>
+## Architecture
 
-## 🏗️ Project Structure
+```text
+                    ┌─────────────────────┐
+                    │     PDF Documents   │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   Text Extraction   │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │  Text Chunking      │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ Embedding Model     │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │   Vector Database   │
+                    └──────────┬──────────┘
+                               │
+              ┌────────────────┴────────────────┐
+              │                                 │
+              ▼                                 ▼
+       Single-Query Search              Multi-Query Search
+              │                                 │
+              └────────────────┬────────────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ Relevant Context    │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ Local LLM (Ollama)  │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ Grounded Response   │
+                    └─────────────────────┘
 ```
-ollama_pdf_rag/
-├── src/
-│   ├── api/                  # FastAPI REST API
-│   │   ├── routers/          # API endpoints
-│   │   ├── services/         # Business logic
-│   │   └── main.py           # API entry point
-│   ├── app/                  # Streamlit application
-│   │   ├── components/       # UI components
-│   │   └── main.py           # Streamlit entry point
-│   └── core/                 # Core RAG functionality
-│       ├── document.py       # PDF processing
-│       ├── embeddings.py     # Vector embeddings
-│       ├── llm.py            # LLM configuration
-│       └── rag.py            # RAG pipeline
-├── web-ui/                   # Next.js frontend
-│   ├── app/                  # Next.js app router
-│   ├── components/           # React components
-│   └── lib/                  # Utilities & AI integration
-├── data/
-│   ├── pdfs/                 # PDF storage
-│   └── vectors/              # ChromaDB storage
-├── notebooks/                # Jupyter notebooks
-├── tests/                    # Unit tests
-├── docs/                     # Documentation
-├── run.py                    # Streamlit runner
-├── run_api.py                # FastAPI runner
-└── start_all.sh              # Start all services
-```
 
-## 🚀 Getting Started
+## How It Works
+
+### 1. Document Ingestion
+
+Users upload one or more PDF documents through the Streamlit interface.
+
+The documents are processed and divided into smaller chunks so that relevant sections can be efficiently retrieved later.
+
+### 2. Embedding Generation
+
+Each document chunk is converted into a numerical vector using an embedding model.
+
+These embeddings capture the semantic meaning of the text and allow the system to identify conceptually similar content.
+
+### 3. Vector Retrieval
+
+The generated embeddings are stored in a vector database.
+
+When a user asks a question, the query is embedded and compared against the stored document vectors to retrieve the most relevant chunks.
+
+### 4. Multi-Query Retrieval
+
+For complex questions, the system can generate multiple variations of the original query.
+
+Each variation is independently searched against the vector database, allowing the system to retrieve relevant information that may not be found using the original query alone.
+
+### 5. Context-Grounded Generation
+
+The retrieved document chunks are provided as context to the local LLM.
+
+The model then generates an answer based on the retrieved information rather than relying entirely on its pretrained knowledge.
+
+## Local AI Stack
+
+The project supports local inference using **Ollama**, allowing both embedding generation and LLM inference to run locally.
+
+### Models used in evaluation
+
+* **Embedding:** `nomic-embed-text`
+* **LLM:** `llama3.2`
+* **Inference:** Local Ollama deployment
+
+This approach reduces dependence on external APIs and helps keep uploaded documents within the local environment.
+
+## Evaluation
+
+A major focus of this project was **measuring retrieval quality rather than only demonstrating that the application works**.
+
+A benchmark consisting of **30 questions** was used to compare different retrieval strategies.
+
+### Evaluation Metrics
+
+| Metric              | Purpose                                                                            |
+| ------------------- | ---------------------------------------------------------------------------------- |
+| Context Precision   | Measures how much of the retrieved context is relevant to the question             |
+| Context Utilization | Measures how effectively the retrieved context contributes to the generated answer |
+| Response Time       | Measures the computational overhead of retrieval and generation                    |
+
+### Results
+
+The multi-document RAG system achieved:
+
+* **71% Context Precision**
+* **99% Context Utilization**
+
+The project also evaluated **Single-Query Retrieval vs Multi-Query Retrieval** to understand the trade-off between retrieval quality and computational cost.
+
+> **Key observation:** Multi-query retrieval can provide additional retrieval perspectives, but generating and processing multiple queries introduces significant latency. This highlights the importance of balancing retrieval quality against inference cost.
+
+## Tech Stack
+
+### AI / ML
+
+* Large Language Models (LLMs)
+* Retrieval-Augmented Generation (RAG)
+* Embedding Models
+* Semantic Search
+* Multi-Query Retrieval
+
+### Frameworks & Tools
+
+* Python
+* Streamlit
+* Ollama
+* Vector Database
+
+### Models
+
+* `nomic-embed-text`
+* `llama3.2`
+
+## Getting Started
 
 ### Prerequisites
 
-1. **Install Ollama**
-   - Visit [Ollama's website](https://ollama.ai) to download and install
-   - Pull required models:
-     ```bash
-     ollama pull llama3.2  # or your preferred chat model
-     ollama pull nomic-embed-text  # for embeddings
-     ```
+Make sure you have:
 
-2. **Clone Repository**
-   ```bash
-   git clone https://github.com/tonykipkemboi/ollama_pdf_rag.git
-   cd ollama_pdf_rag
-   ```
+* Python 3.x
+* Ollama
+* Git
 
-3. **Set Up Python Environment**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-
-4. **Set Up Next.js Frontend** (for the modern UI)
-   ```bash
-   cd web-ui
-   pnpm install
-   pnpm db:migrate
-   cd ..
-   ```
-
-### 🎮 Running the Application
-
-#### Option 1: Next.js + FastAPI (Recommended)
-
-Start both services:
+Install Ollama and pull the required models:
 
 ```bash
-# Terminal 1: Start the FastAPI backend
-python run_api.py
-# Runs on http://localhost:8001
-
-# Terminal 2: Start the Next.js frontend
-cd web-ui && pnpm dev
-# Runs on http://localhost:3000
+ollama pull nomic-embed-text
+ollama pull llama3.2
 ```
 
-Or use the convenience script:
-```bash
-./start_all.sh
-```
-
-**Service URLs:**
-| Service | URL | Description |
-|---------|-----|-------------|
-| Next.js Frontend | http://localhost:3000 | Modern chat interface |
-| FastAPI Backend | http://localhost:8001 | REST API |
-| API Documentation | http://localhost:8001/docs | Swagger UI |
-
-#### Option 2: Streamlit Interface
+### Clone the Repository
 
 ```bash
-python run.py
-# Runs on http://localhost:8501
+git clone https://github.com/ishangoel2005/LOCALIZED-LLM-POWER-SEARCH-ENGINE.git
+cd LOCALIZED-LLM-POWER-SEARCH-ENGINE
 ```
 
-#### Option 3: Jupyter Notebook
+### Install Dependencies
 
 ```bash
-jupyter notebook
+pip install -r requirements.txt
 ```
-Open `notebooks/experiments/updated_rag_notebook.ipynb` to experiment with the code.
 
-## 💡 Usage
-
-### Next.js Interface
-1. **Upload PDFs** - Click the 📎 button or drag & drop files
-2. **View PDFs** - Uploaded PDFs appear in the sidebar with chunk counts
-3. **Select Model** - Choose from your locally available Ollama models
-4. **Ask Questions** - Type your question and get answers with source citations
-5. **View Reasoning** - See the AI's thinking process and retrieved chunks
-
-### Streamlit Interface
-1. **Upload PDF** - Use the file uploader or toggle "Use sample PDF"
-2. **Select Model** - Choose from available Ollama models
-3. **Ask Questions** - Chat with your PDF through the interface
-4. **Adjust Display** - Use the zoom slider for PDF visibility
-5. **Clean Up** - Delete collections when switching documents
-
-## 🔌 API Reference
-
-The FastAPI backend provides these endpoints:
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/v1/pdfs/upload` | Upload and process a PDF |
-| `GET` | `/api/v1/pdfs` | List all uploaded PDFs |
-| `DELETE` | `/api/v1/pdfs/{pdf_id}` | Delete a PDF |
-| `POST` | `/api/v1/query` | Query PDFs with RAG |
-| `GET` | `/api/v1/models` | List available Ollama models |
-| `GET` | `/api/v1/health` | Health check |
-
-See full documentation at http://localhost:8001/docs when running.
-
-## 🧪 Testing
+### Run the Application
 
 ```bash
-# Run all tests
-python -m pytest tests/ -v
-
-# Run with coverage
-python -m pytest tests/ --cov=src
+streamlit run app.py
 ```
 
-### Pre-commit Hooks
-```bash
-pip install pre-commit
-pre-commit install
-```
+Open the Streamlit URL shown in your terminal and upload your PDF documents.
 
-## ⚠️ Troubleshooting
+## Example Use Cases
 
-- **Ollama not responding**: Ensure Ollama is running (`ollama serve`)
-- **Model not found**: Pull models with `ollama pull <model-name>`
-- **No chunks retrieved**: Re-upload PDFs to rebuild the vector database
-- **Port conflicts**: Check if ports 3000, 8001, or 8501 are in use
+The system can be used for:
 
-### Common Errors
+* Research paper analysis
+* Academic document search
+* Technical documentation
+* Internal organizational documents
+* Reports and manuals
+* Research and literature exploration
+* Offline/private document analysis
 
-#### ONNX DLL Error (Windows)
-```
-DLL load failed while importing onnx_copy2py_export
-```
-Install [Microsoft Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist) and restart.
+## Future Improvements
 
-#### CPU-Only Systems
-Reduce chunk size if experiencing memory issues:
-- Modify `chunk_size` to 500-1000 in `src/core/document.py`
+Potential improvements include:
 
-## 🤝 Contributing
-
-- Open issues for bugs or suggestions
-- Submit pull requests
-- Comment on the YouTube video for questions
-- ⭐ Star the repository if you find it useful!
-
-## 📝 License
-
-This project is open source and available under the MIT License.
-
----
-
-
-<<<<<<< HEAD
-=======
-[![Star History Chart](https://api.star-history.com/svg?repos=tonykipkemboi/ollama_pdf_rag&type=Date)](https://star-history.com/#tonykipkemboi/ollama_pdf_rag&Date)
-
-Built with ❤️ by [Tony Kipkemboi](https://tonykipkemboi.com)
-
-Follow me on [X](https://x.com/tonykipkemboi) | [LinkedIn](https://www.linkedin.com/in/tonykipkemboi/) | [YouTube](https://www.youtube.com/@tonykipkemboi) | [GitHub](https://github.com/tonykipkemboi)
->>>>>>> f17f9c980f604dda2765d9cceab7d2d5ce90d00e
+* Hybrid keyword + semantic retrieval
+* Cross-encoder reranking
+* Adaptive query expansion
+* Better chunking strategies
+* Citation-aware responses
+* Retrieval caching
+* Quantized local LLMs for lower resource usage
+* Larger and more diverse evaluation datasets
+* Automated hallucination and faithfulness evaluation
+* Improved latency for multi-query retrieval
